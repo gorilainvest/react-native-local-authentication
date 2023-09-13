@@ -112,8 +112,15 @@ public class RNLocalAuthenticationModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        biometricPrompt = new BiometricPrompt((FragmentActivity) getCurrentActivity(),
-                executor, new BiometricPrompt.AuthenticationCallback() {
+        FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
+
+        if (fragmentActivity == null) {
+            p.resolve(makeAuthorizationResponse(false, BiometricPrompt.ERROR_UNABLE_TO_PROCESS));
+            return;
+        }
+
+        biometricPrompt = new BiometricPrompt(fragmentActivity,
+            executor, new BiometricPrompt.AuthenticationCallback() {
 
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
